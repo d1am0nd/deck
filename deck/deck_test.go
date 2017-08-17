@@ -6,12 +6,18 @@ import (
 
 func testCards() []Card {
     return []Card{
-        Card{face: "H", value: "2"},
-        Card{face: "H", value: "3"} }
+        Card{face: "h", value: "2"},
+        Card{face: "h", value: "3"} }
 }
 
 func testDeck() Deck {
     return NewDeck(testCards())
+}
+
+func testDeck3() Deck {
+    d := testDeck()
+    d.cards = append(d.cards, Card{face: "s", value: "A"})
+    return d
 }
 
 func testEqCard(a, b []Card) bool {
@@ -60,6 +66,14 @@ func TestCards(t *testing.T) {
     }
 }
 
+func TestSetCards(t *testing.T) {
+    deck := NewDeck([]Card{})
+    deck.SetCards(testCards())
+    if !testEqCard(testCards(), deck.cards) {
+        t.Fatal("testDeck.Cards() does not equal input cards")
+    }
+}
+
 func TestCard(t *testing.T) {
     deck := testDeck()
     if deck.Card(0) != testCards()[0] {
@@ -85,5 +99,27 @@ func TestDraw(t *testing.T) {
     }
     if len(deck.cards) != 0 {
         t.Fatal("testing.Draw() 2 count is ", len(deck.cards), " should be 0")
+    }
+    c = deck.Draw()
+    if c.valid {
+        t.Fatal("testing.Draw() 3 returned a valid card, shouldnt")
+    }
+}
+
+func TestDrawCards(t *testing.T) {
+    deck := testDeck3()
+    c, err := deck.DrawCards(2)
+    if err != nil {
+        t.Fatal("testDeck.DrawCards(2) returned an error, shouldnt")
+    }
+    if len(c) != 2 {
+        t.Fatal("testDeck.DrawCards(2) does not contain 2 cards")
+    }
+    c, err = deck.DrawCards(2)
+    if err == nil {
+        t.Fatal("testDeck.DrawCards(2) 2 doesnt return an error, should")
+    }
+    if len(deck.cards) != 1 {
+        t.Fatal("testing.DrawCards(2) 2 deck count is ", len(deck.cards), " should be 1")
     }
 }

@@ -25,6 +25,10 @@ func (d *Deck) Cards() []Card {
     return d.cards
 }
 
+func (d *Deck) SetCards(c []Card) {
+    d.cards = c
+}
+
 func (d *Deck) Card(i int) Card {
     return d.cards[i]
 }
@@ -50,6 +54,18 @@ func (d *Deck) Draw() Card {
         return NewCard("")
     }
     c := d.Card(0)
-    d.cards = d.cards[1:]
+    d.SetCards(d.cards[1:])
     return c
+}
+
+func (d *Deck) DrawCards(n int) ([]Card, error) {
+    if d.Count() < n {
+        return []Card{}, newErr("Not enough cards in deck")
+    }
+
+    cards := d.Cards()
+    drawn := cards[:n]
+    d.SetCards(cards[n:])
+
+    return drawn, nil
 }
