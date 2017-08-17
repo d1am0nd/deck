@@ -55,5 +55,5 @@ func (c *Card) Value() string {
 }
 
 func (c *Card) Comparable() int {
-    return vals[c.Face()]
+    return vals[c.Value()]
 }
