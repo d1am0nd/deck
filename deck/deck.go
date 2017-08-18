@@ -1,7 +1,6 @@
 package deck
 
 import (
-    // "fmt"
     "time"
     "math/rand"
 )
@@ -66,6 +65,19 @@ func (d *Deck) DrawCards(n int) ([]Card, error) {
     cards := d.Cards()
     drawn := cards[:n]
     d.SetCards(cards[n:])
+
+    return drawn, nil
+}
+
+func (d *Deck) DrawCardsFromN(i, n int) ([]Card, error) {
+    clen := d.Count()
+    if i + n > clen   {
+        return []Card{}, newErr("Not enough cards in deck")
+    }
+
+    cards := d.Cards()
+    drawn := cards[i:(i + n)]
+    d.SetCards(append(cards[:i], cards[i + n:]...))
 
     return drawn, nil
 }

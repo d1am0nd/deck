@@ -6,8 +6,17 @@ import (
 
 func testCards() []Card {
     return []Card{
-        Card{face: "h", value: "2"},
-        Card{face: "h", value: "3"} }
+        Card{face: "h", value: "2", valid: true},
+        Card{face: "h", value: "3", valid: true} }
+}
+func testCards6() []Card {
+    return []Card{
+        Card{face: "h", value: "2", valid: true},
+        Card{face: "h", value: "3", valid: true},
+        Card{face: "s", value: "A", valid: true},
+        Card{face: "c", value: "T", valid: true},
+        Card{face: "d", value: "7", valid: true},
+        Card{face: "d", value: "4", valid: true} }
 }
 
 func testDeck() Deck {
@@ -20,8 +29,11 @@ func testDeck3() Deck {
     return d
 }
 
-func testEqCard(a, b []Card) bool {
+func testDeck6() Deck {
+    return NewDeck(testCards6())
+}
 
+func testEqCard(a, b []Card) bool {
     if a == nil && b == nil {
         return true;
     }
@@ -121,5 +133,59 @@ func TestDrawCards(t *testing.T) {
     }
     if len(deck.cards) != 1 {
         t.Fatal("testing.DrawCards(2) 2 deck count is ", len(deck.cards), " should be 1")
+    }
+    c, err = deck.DrawCards(1)
+    if err != nil {
+        t.Fatal("testDeck.DrawCards(1) returned an error, shouldnt")
+    }
+    if len(c) != 1 {
+        t.Fatal("testDeck.DrawCards(1) does not contain 1 cards")
+    }
+    if len(deck.cards) != 0 {
+        t.Fatal("testDeck.DrawCards(1) deck afterwards does not contain 0 cards")
+    }
+}
+
+func TestDrawCardsFromN(t *testing.T) {
+    deck := testDeck6()
+    c, err := deck.DrawCardsFromN(1, 3)
+    if err != nil {
+        t.Fatal("testDeck.DrawCardsFromN(1, 3) returned error, shouldnt")
+    }
+    if len(deck.cards) != 3 {
+        t.Fatal("testDeck.DrawCardsFromN(1, 3) deck got ", len(deck.cards), " should have 3")
+    }
+    if deck.cards[1] != testCards6()[4] {
+        t.Fatal("testDeck.DrawCardsFromN(1, 3) deck's 2nd card is wrong")
+    }
+    c, err = deck.DrawCardsFromN(5, 0)
+    if err == nil {
+        t.Fatal("testDeck.DrawCardsFromN(5, 0) returned no error, should (index too big)")
+    }
+    if len(c) != 0 {
+        t.Fatal("testing.DrawCardsFromN(5, 0) returned non-empty cards array, shouldnt")
+    }
+    if len(deck.cards) != 3 {
+        t.Fatal("testDeck.DrawCardsFromN(5, 0) returned ", len(deck.cards), " should have 3")
+    }
+    c, err = deck.DrawCardsFromN(0, 4)
+    if err == nil {
+        t.Fatal("testDeck.DrawCardsFromN(0, 4) returned no error, should (not enough cards in deck)")
+    }
+    if len(c) != 0 {
+        t.Fatal("testing.DrawCardsFromN(0, 4) returned non-empty cards array, shouldnt")
+    }
+    if len(deck.cards) != 3 {
+        t.Fatal("testDeck.DrawCardsFromN(0, 4) returned ", len(deck.cards), " should have 3")
+    }
+    c, err = deck.DrawCardsFromN(0, 3)
+    if err != nil {
+        t.Fatal("testDeck.DrawCardsFromN(0, 3) returned error, shouldnt")
+    }
+    if len(deck.cards) != 0 {
+        t.Fatal("testDeck.DrawCardsFromN(0, 3) deck got ", len(deck.cards), " should have 0")
+    }
+    if c[1] != testCards6()[4] {
+        t.Fatal("testDeck.DrawCardsFromN(0, 3) returned wrong 2nd card")
     }
 }
