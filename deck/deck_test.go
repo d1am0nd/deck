@@ -189,3 +189,46 @@ func TestDrawCardsFromN(t *testing.T) {
         t.Fatal("testDeck.DrawCardsFromN(0, 3) returned wrong 2nd card")
     }
 }
+
+func TestPutOnTop(t *testing.T) {
+    deck := testDeck()
+    c := Card{face: "d", value: "7", valid: true}
+    deck.PutOnTop(c)
+    if deck.cards[0] != c {
+        t.Fatal("testDeck.PutOnTop(7d), deck's first card isnt correct")
+    }
+    if len(deck.cards) != 3 {
+        t.Fatal("testDeck.PutOnTop(7d) deck has ", len(deck.cards), " cards, should have 3")
+    }
+}
+
+func TestPutOnBot(t *testing.T) {
+    deck := testDeck()
+    c := Card{face: "d", value: "7", valid: true}
+    deck.PutOnBot(c)
+    if deck.cards[2] != c {
+        t.Fatal("testDeck.PutOnBot(7d), deck's last card isnt correct")
+    }
+    if len(deck.cards) != 3 {
+        t.Fatal("testDeck.PutOnBot(7d) deck has ", len(deck.cards), " cards, should have 3")
+    }
+}
+
+func TestPutInN(t *testing.T) {
+    deck := testDeck()
+    c := Card{face: "d", value: "7", valid: true}
+    err := deck.PutInN(2, c)
+    if err != nil {
+        t.Fatal("testDeck.PutInN(2, 7d) returned error ", err, ", shouldnt")
+    }
+    if len(deck.cards) != 3 {
+        t.Fatal("testDeck.PutInN(2, 7d) returned deck with ", len(deck.cards), "cards, should have 3")
+    }
+    if deck.cards[2] != c {
+        t.Fatal("testDeck.PutInN(2, 7d) deck's card[2] is wrong")
+    }
+    err = deck.PutInN(4, c)
+    if err == nil {
+        t.Fatal("testDeck.PutInN(3, 7d) didnt return an error, should (n too high)")
+    }
+}
