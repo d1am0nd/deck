@@ -118,6 +118,27 @@ func TestDraw(t *testing.T) {
     }
 }
 
+func TestDrawCardFromN(t *testing.T) {
+    deck := testDeck()
+    c, err := deck.DrawCardFromN(2)
+    if err == nil {
+        t.Fatal("testDeck.DrawCardFromN(2) didnt return an error, should")
+    }
+    if c.valid {
+        t.Fatal("testDeck.DrawCardFromN(2) returned valid card, shouldnt")
+    }
+    c, err = deck.DrawCardFromN(1)
+    if err != nil {
+        t.Fatal("testDeck.DrawCardFromN(1) returned error, shouldnt")
+    }
+    if c != testCards()[1] {
+        t.Fatal("testDeck.DrawCardFromN(1) returned wrong card, should be 3h")
+    }
+    if len(deck.cards) != 1 {
+        t.Fatal("testDeck.DrawCardFromN(1) deck has ", len(deck.cards), "cards, should have 1")
+    }
+}
+
 func TestDrawCards(t *testing.T) {
     deck := testDeck3()
     c, err := deck.DrawCards(2)
@@ -187,6 +208,27 @@ func TestDrawCardsFromN(t *testing.T) {
     }
     if c[1] != testCards6()[4] {
         t.Fatal("testDeck.DrawCardsFromN(0, 3) returned wrong 2nd card")
+    }
+}
+
+func TestFindAndDraw(t *testing.T) {
+    deck := testDeck()
+    c, err := deck.FindAndDraw(testCards()[1])
+    if err != nil {
+        t.Fatal("testDeck.FindAndDraw(3h) returned error, shouldnt")
+    }
+    if c != testCards()[1] {
+        t.Fatal("testDeck.FindAndDraw(3h) returned wrong card, should be 3h")
+    }
+    c, err = deck.FindAndDraw(testCards()[1])
+    if err == nil {
+        t.Fatal("testDeck.FindAndDraw(3h) didnt return an error, should")
+    }
+    if c.valid {
+        t.Fatal("testDeck.FindAndDraw(3h) returned valid card, shouldnt")
+    }
+    if len(deck.cards) != 1 {
+        t.Fatal("testDeck.FindAndDraw(3h) deck got ", len(deck.cards), " should have 1")
     }
 }
 

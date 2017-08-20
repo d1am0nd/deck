@@ -62,6 +62,17 @@ func (d *Deck) Draw() Card {
     return c
 }
 
+// Draws card from index n if exists
+func (d *Deck) DrawCardFromN(i int) (Card, error) {
+    cards := d.Cards()
+    if i >= len(cards) {
+        return Card{}, newErr("Not enough cards in deck")
+    }
+    card := cards[i]
+    d.SetCards(append(cards[:i], cards[i + 1:]...))
+    return card, nil
+}
+
 // Draws top n cards
 func (d *Deck) DrawCards(n int) ([]Card, error) {
     if d.Count() < n {
@@ -89,6 +100,15 @@ func (d *Deck) DrawCardsFromN(i, n int) ([]Card, error) {
     return drawn, nil
 }
 
+// Draws specific card if found
+func (d *Deck) FindAndDraw(c Card) (Card, error) {
+    for i := range d.Cards() {
+        if d.Card(i) == c {
+            return d.DrawCardFromN(i)
+        }
+    }
+    return Card{}, newErr("Card not found")
+}
 
 /** Appending to deck */
 
@@ -104,7 +124,7 @@ func (d *Deck) PutOnBot(c Card) {
 
 func (d *Deck) PutInN(i int, c Card) error {
     if i > d.Count() {
-        return newErr("not enought cards in deck")
+        return newErr("not enough cards in deck")
     }
     cards := d.Cards()
     d.SetCards(append(cards[:i], append([]Card{c}, cards[i:]...)...))
