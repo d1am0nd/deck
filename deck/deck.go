@@ -157,6 +157,7 @@ func (d *Deck) PutOnBot(c Card) {
     d.SetCards(append(d.Cards(), c))
 }
 
+// Append card to deck to nth index
 func (d *Deck) PutInN(i int, c Card) error {
     if i > d.Count() {
         return newErr("not enough cards in deck")
