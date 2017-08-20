@@ -96,6 +96,22 @@ func TestCard(t *testing.T) {
     }
 }
 
+func TestSortByComp(t *testing.T) {
+    deck := testDeck6()
+    deck.SortByComp(false)
+    for i := 0; i < len(deck.cards) - 1; i++ {
+        if deck.cards[i].Comparable() > deck.cards[i + 1].Comparable() {
+            t.Fatal("deck.SortByComp deck[", i, "] ", deck.cards[i], " is bigger than deck[", i + 1, "]", deck.cards[i+1])
+        }
+    }
+    deck.SortByComp(true)
+    for i := 0; i < len(deck.cards) - 1; i++ {
+        if deck.cards[i].Comparable() < deck.cards[i + 1].Comparable() {
+            t.Fatal("deck.SortByComp deck[", i, "] is smaller than deck[", i + 1, "]")
+        }
+    }
+}
+
 func TestDraw(t *testing.T) {
     deck := testDeck()
     c := deck.Draw()

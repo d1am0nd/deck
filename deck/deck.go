@@ -49,6 +49,41 @@ func (d *Deck) Count() int {
     return len(d.Cards())
 }
 
+// Sorting by comparable()
+func (d *Deck) SortByComp(desc bool) {
+    sortByComp(d.Cards(), desc)
+}
+
+// Quciksort with pivot being middle element
+func sortByComp(cards []Card, desc bool) []Card {
+    clen := len(cards)
+    if clen <= 1 {
+        return cards
+    }
+    pivoti := clen/2
+    pivot := cards[pivoti]
+    left, right := 0, clen - 1
+    cards[pivoti], cards[right] = cards[right], cards[pivoti]
+    for i := range cards {
+        if desc {
+            if cards[i].Comparable() > pivot.Comparable() {
+                cards[left], cards[i] = cards[i], cards[left]
+                left++
+            }
+        } else {
+            if cards[i].Comparable() < pivot.Comparable() {
+                cards[left], cards[i] = cards[i], cards[left]
+                left++
+            }
+        }
+    }
+    cards[left], cards[right] = cards[right], cards[left]
+    sortByComp(cards[:left], desc)
+    sortByComp(cards[left + 1:], desc)
+
+    return cards
+}
+
 
 /** Drawing from deck */
 
