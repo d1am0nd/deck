@@ -64,7 +64,7 @@ func sortByComp(cards []Card, desc bool) []Card {
     pivot := cards[pivoti]
     left, right := 0, clen - 1
     cards[pivoti], cards[right] = cards[right], cards[pivoti]
-    for i := range cards {
+    for i := 0; i < right; i++ {
         if desc {
             if cards[i].Comparable() > pivot.Comparable() {
                 cards[left], cards[i] = cards[i], cards[left]
