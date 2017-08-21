@@ -1,6 +1,7 @@
 package deck
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -53,6 +54,22 @@ func testEqCard(a, b []Card) bool {
 	}
 
 	return true
+}
+
+func TestNewDefaultDeck(t *testing.T) {
+	deck := NewDefaultDeck()
+	for f := range faces {
+		Vals:
+			for v := range vals {
+				card := Card{face: f, value: v, valid: true}
+				for _, c := range deck.Cards() {
+					if c == card {
+						continue Vals
+					}
+				}
+				t.Fatal("NewDefaultDeck() card", v, f, "not found")
+			}
+	}
 }
 
 func TestNewDeck(t *testing.T) {

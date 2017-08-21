@@ -20,6 +20,16 @@ func NewDeck(cards []Card) Deck {
 	return Deck{cards: cards}
 }
 
+func NewDefaultDeck() Deck {
+    cards := []Card{}
+    for v := range vals {
+        for f := range faces {
+            cards = append(cards, NewCard(v + f))
+        }
+    }
+    return NewDeck(cards)
+}
+
 func (d *Deck) Cards() []Card {
 	return d.cards
 }
