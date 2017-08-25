@@ -1,9 +1,9 @@
 package hearths
 
 import (
-    "fmt"
+	"fmt"
 )
 
 func newErr(err string) error {
-    return fmt.Errorf(err)
+	return fmt.Errorf(err)
 }

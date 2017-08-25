@@ -1,17 +1,17 @@
 package hearths
 
 import (
-    "cards/deck"
+	"cards/deck"
 )
 
 type Player struct {
-    hand deck.Deck
+	hand deck.Deck
 }
 
 func NewPlayer(d deck.Deck) Player {
-    return Player{hand: d}
+	return Player{hand: d}
 }
 
 func (p *Player) Hand() *deck.Deck {
-    return &p.hand
+	return &p.hand
 }
