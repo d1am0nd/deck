@@ -154,9 +154,17 @@ func (d *Deck) DrawCardsFromN(i, n int) ([]Card, error) {
 }
 
 // Draws all passed cards or return an error, if at least one of them is not found
-//func (d *Deck) DrawSpecificCards(cards []Card) error {
-
-// }
+func (d *Deck) DrawSpecificCards(cards []Card) error {
+	for i := range cards {
+		if !d.Find(cards[i]) {
+			return newErr("Card not found")
+		}
+	}
+	for i := range cards {
+		d.FindAndDraw(cards[i])
+	}
+	return nil
+}
 
 // Draws specific card if found
 func (d *Deck) FindAndDraw(c Card) (Card, error) {

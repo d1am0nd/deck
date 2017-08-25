@@ -257,6 +257,19 @@ func TestDrawCardsFromN(t *testing.T) {
 	}
 }
 
+func TestDrawSpecificCards(t *testing.T) {
+	deck := testDeck6()
+	toDraw := testCards()
+	err := deck.DrawSpecificCards(toDraw)
+	if err != nil {
+		t.Fatal("testDeck6.DrawSpecificCards returned err,", err, " shouldnt")
+	}
+	err = deck.DrawSpecificCards([]Card{Card{face: "c", value: "T", valid: true},Card{face: "h", value: "3", valid: true}})
+	if len(deck.cards) != 4 {
+		t.Fatal("testDeck6.DrawSpecificCards has", len(deck.cards), "cards, should have 4")
+	}
+}
+
 func TestFindAndDraw(t *testing.T) {
 	deck := testDeck()
 	c, err := deck.FindAndDraw(testCards()[1])
