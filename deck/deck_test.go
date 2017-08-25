@@ -102,6 +102,20 @@ func TestSetCards(t *testing.T) {
 	}
 }
 
+func TestFind(t *testing.T) {
+	deck := testDeck()
+	if deck.Find(testCards()[0]) == false {
+		t.Fatal("testDeck.Find didnt find a card that should exist")
+	}
+	if deck.Find(Card{face: "c", value: "7s", valid: true}) == true {
+		t.Fatal("testDeck.Find found a card that shouldnt be in")
+	}
+	deck = NewDeck([]Card{})
+	if deck.Find(Card{face: "c", value: "7s", valid: true}) == true {
+		t.Fatal("testDeck.Find 2 found a card that shouldnt be in")
+	}
+}
+
 func TestCard(t *testing.T) {
 	deck := testDeck()
 	if deck.Card(0) != testCards()[0] {

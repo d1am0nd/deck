@@ -38,6 +38,15 @@ func (d *Deck) SetCards(c []Card) {
 	d.cards = c
 }
 
+func (d *Deck) Find(c Card) bool {
+	for i := range d.cards {
+		if d.cards[i] == c {
+			return true
+		}
+	}
+	return false
+}
+
 // Returns the card on index i
 func (d *Deck) Card(i int) Card {
 	return d.cards[i]
@@ -143,6 +152,11 @@ func (d *Deck) DrawCardsFromN(i, n int) ([]Card, error) {
 
 	return drawn, nil
 }
+
+// Draws all passed cards or return an error, if at least one of them is not found
+//func (d *Deck) DrawSpecificCards(cards []Card) error {
+
+// }
 
 // Draws specific card if found
 func (d *Deck) FindAndDraw(c Card) (Card, error) {
