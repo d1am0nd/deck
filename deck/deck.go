@@ -48,8 +48,8 @@ func (d *Deck) Shuffle() {
 	cards := d.Cards()
 	clen := len(cards)
 	for i := clen - 1; i > 0; i-- {
-		rand.Seed(time.Now().Unix())
-		swapi := rand.Intn(i)
+		rng := rand.New(rand.NewSource(time.Now().UnixNano()))
+		swapi := rng.Intn(i)
 		cards[swapi], cards[i] = cards[i], cards[swapi]
 	}
 }

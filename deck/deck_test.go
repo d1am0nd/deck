@@ -1,7 +1,6 @@
 package deck
 
 import (
-	"fmt"
 	"testing"
 )
 
@@ -274,6 +273,14 @@ func TestPutOnTop(t *testing.T) {
 	}
 	if len(deck.cards) != 3 {
 		t.Fatal("testDeck.PutOnTop(7d) deck has ", len(deck.cards), " cards, should have 3")
+	}
+	c = Card{face: "h", value: "7", valid: true}
+	deck.PutOnTop(c)
+	if deck.cards[0] != c {
+		t.Fatal("testDeck.PutOnTop(7d), deck's first card isnt correct")
+	}
+	if len(deck.cards) != 4 {
+		t.Fatal("testDeck.PutOnTop(7h) deck has ", len(deck.cards), " cards, should have 4")
 	}
 }
 

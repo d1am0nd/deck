@@ -15,18 +15,17 @@ type Board struct {
 const P1 = 1
 const P2 = 2
 
-func NewBoard(players [4]Player) error {
+func NewBoard(players [4]Player) Board {
     return Board{
         players: players,
-        deck: deck.NewDeck([]deck.Card{}),
+        deck: deck.NewDefaultDeck(),
         mainPile: deck.NewDeck([]deck.Card{}),
         discardPile: deck.NewDeck([]deck.Card{}),
-        phase: 1
-    }
+        phase: 1 }
 }
 
 func (b *Board) P1ShuffleDeck() error {
-    if phase != P1 {
+    if b.phase != P1 {
         newErr("Wrong phase")
     }
     b.deck.Shuffle()
@@ -34,11 +33,12 @@ func (b *Board) P1ShuffleDeck() error {
 }
 
 func (b *Board) P1DealAll() error {
-    if phase != P1 {
+    if b.phase != P1 {
         newErr("Wrong phase")
     }
-    for i := 0; i < b.deck.Count(); i++ {
-        players[i % 4].Hand().PutOnTop(b.deck.Draw())
+    for i := 0; i < 52; i++ {
+        hand := b.players[i % 4].Hand()
+        hand.PutOnTop(b.deck.Draw())
     }
     return nil
 }

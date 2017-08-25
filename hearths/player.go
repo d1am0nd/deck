@@ -12,6 +12,6 @@ func NewPlayer(d deck.Deck) Player {
     return Player{hand: d}
 }
 
-func (p *Player) Hand() deck.Deck {
-    return p.hand
+func (p *Player) Hand() *deck.Deck {
+    return &p.hand
 }
