@@ -21,13 +21,13 @@ func NewDeck(cards []Card) Deck {
 }
 
 func NewDefaultDeck() Deck {
-    cards := []Card{}
-    for v := range vals {
-        for f := range faces {
-            cards = append(cards, NewCard(v + f))
-        }
-    }
-    return NewDeck(cards)
+	cards := []Card{}
+	for v := range vals {
+		for f := range faces {
+			cards = append(cards, NewCard(v+f))
+		}
+	}
+	return NewDeck(cards)
 }
 
 func (d *Deck) Cards() []Card {

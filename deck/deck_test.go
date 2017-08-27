@@ -58,16 +58,16 @@ func testEqCard(a, b []Card) bool {
 func TestNewDefaultDeck(t *testing.T) {
 	deck := NewDefaultDeck()
 	for f := range faces {
-		Vals:
-			for v := range vals {
-				card := Card{face: f, value: v, valid: true}
-				for _, c := range deck.Cards() {
-					if c == card {
-						continue Vals
-					}
+	Vals:
+		for v := range vals {
+			card := Card{face: f, value: v, valid: true}
+			for _, c := range deck.Cards() {
+				if c == card {
+					continue Vals
 				}
-				t.Fatal("NewDefaultDeck() card", v, f, "not found")
 			}
+			t.Fatal("NewDefaultDeck() card", v, f, "not found")
+		}
 	}
 }
 
@@ -264,7 +264,7 @@ func TestDrawSpecificCards(t *testing.T) {
 	if err != nil {
 		t.Fatal("testDeck6.DrawSpecificCards returned err,", err, " shouldnt")
 	}
-	err = deck.DrawSpecificCards([]Card{Card{face: "c", value: "T", valid: true},Card{face: "h", value: "3", valid: true}})
+	err = deck.DrawSpecificCards([]Card{Card{face: "c", value: "T", valid: true}, Card{face: "h", value: "3", valid: true}})
 	if len(deck.cards) != 4 {
 		t.Fatal("testDeck6.DrawSpecificCards has", len(deck.cards), "cards, should have 4")
 	}
