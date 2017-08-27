@@ -98,3 +98,9 @@ func (b *Board) P2Trade(fromi int, cards []deck.Card) error {
 
 	return err
 }
+
+/*
+func (b *Board) P3PutOnPil(fromi int, card deck.Card) error {
+
+}
+*/
