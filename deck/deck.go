@@ -103,6 +103,25 @@ func sortByComp(cards []Card, desc bool) []Card {
 	return cards
 }
 
+/** Finding cards */
+func (d *Deck) HasFace(f string) bool {
+	for _, c := range d.Cards() {
+		if c.Face() == f {
+			return true
+		}
+	}
+	return false
+}
+
+func (d *Deck) HasValue(v string) bool {
+	for _, c := range d.Cards() {
+		if c.Value() == v {
+			return true
+		}
+	}
+	return false
+}
+
 /** Drawing from deck */
 
 // Draws top card

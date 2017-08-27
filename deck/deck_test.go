@@ -142,6 +142,26 @@ func TestSortByComp(t *testing.T) {
 	}
 }
 
+func TestHasFace(t *testing.T) {
+	deck := testDeck()
+	if deck.HasFace("c") {
+		t.Fatal("deck.HasFace(c) returned true, shouldnt")
+	}
+	if !deck.HasFace("h") {
+		t.Fatal("deck.HasFace(h) returned false, shouldnt")
+	}
+}
+
+func TestHasValue(t *testing.T) {
+	deck := testDeck()
+	if deck.HasValue("5") {
+		t.Fatal("deck.HasValue(5) returned true, shouldnt")
+	}
+	if !deck.HasValue("3") {
+		t.Fatal("deck.HasValue(3) returned false, shouldnt")
+	}
+}
+
 func TestDraw(t *testing.T) {
 	deck := testDeck()
 	c := deck.Draw()
