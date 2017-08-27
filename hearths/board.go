@@ -5,44 +5,49 @@ import (
 )
 
 type Board struct {
-	players     [4]Player
-	deck        deck.Deck
-	mainPile    deck.Deck
-	discardPile deck.Deck
-    nextPlayer int
-	phase       int
+	gamen         int
+	players       [4]Player
+	deck          deck.Deck
+	mainPile      deck.Deck
+	centerPile    deck.Deck
+	hearthsBroken bool
+	turn          int
+	phase         int
 }
 
-const P1 = 1
-const P2 = 2
+const P1 = 1 // Suffle + deal
+const P2 = 2 // Trade
+const P3 = 3 // Play
 
 func NewBoard(players [4]Player) Board {
 	return Board{
-		players:     players,
-		deck:        deck.NewDefaultDeck(),
-		mainPile:    deck.NewDeck([]deck.Card{}),
-		discardPile: deck.NewDeck([]deck.Card{}),
-        nextPlayer: 0,
-		phase:       1}
+		gamen:      0,
+		players:    players,
+		deck:       deck.NewDefaultDeck(),
+		mainPile:   deck.NewDeck([]deck.Card{}),
+		centerPile: deck.NewDeck([]deck.Card{}),
+		hearthsBroken: false,
+		turn:       0,
+		phase:      1}
 }
 
 func (b *Board) Phase() int {
-    return b.phase
+	return b.phase
 }
 
 func (b *Board) NextPlayerI() int {
-    return b.nextPlayer % 4
+	return b.turn % 4
 }
 
 func (b *Board) Player(i int) *Player {
-    return &b.players[i % 4]
+	return &b.players[i%4]
 }
 
-func isNext (first, second int) bool {
-    if first % 4 > second % 4 || (first % 4 == 3 && second % 4 == 0) {
-        return true
-    }
-    return false
+func isNext(first, second int) bool {
+	if first%4 > second%4 || (first%4 == 3 && second%4 == 0) {
+		return true
+	}
+	return false
 }
 
 func (b *Board) P1ShuffleDeck() error {
@@ -65,22 +70,31 @@ func (b *Board) P1DealAll() error {
 	return nil
 }
 
-func (b *Board) P2Trade(fromi int, card deck.Card) error {
+// Expects 3 cards
+func (b *Board) P2Trade(fromi int, cards []deck.Card) error {
 	if b.Phase() != P2 {
 		return newErr("Wrong phase")
 	}
-    if b.NextPlayerI() != fromi {
-        return newErr("Wrong player")
-    }
-    to := b.Player((fromi + 1) % 4)
-    from := b.Player(fromi)
-    var err error
-    card, err = from.Hand().FindAndDraw(card)
-    if err != nil {
-        return err
-    }
-    to.Hand().PutOnTop(card)
-    b.nextPlayer++
+	if b.NextPlayerI() != fromi {
+		return newErr("Wrong player")
+	}
+	if len(cards) != 3 {
+		return newErr("Need exactly 3 cards")
+	}
+	to := b.Player((fromi + (b.gamen % 3) + 1) % 4)
+	from := b.Player(fromi)
 
-    return err
+	var err error
+	err = from.Hand().DrawSpecificCards(cards)
+	if err != nil {
+		return err
+	}
+	to.Hand().PutManyOnTop(cards)
+	b.turn++
+
+	if b.turn == 4 {
+		b.phase = P3
+	}
+
+	return err
 }

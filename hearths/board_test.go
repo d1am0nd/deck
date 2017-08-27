@@ -1,12 +1,11 @@
 package hearths
 
 import (
-	"cards/deck"
 	"testing"
 )
 
 func testBoard() Board {
-	return NewBoard([4]Player{NewPlayer(deck.Deck{}), NewPlayer(deck.Deck{}), NewPlayer(deck.Deck{}), NewPlayer(deck.Deck{})})
+	return NewBoard([4]Player{NewPlayer(), NewPlayer(), NewPlayer(), NewPlayer()})
 }
 
 func testBoardP2() Board {
@@ -24,11 +23,17 @@ func TestNewBoard(t *testing.T) {
 	if board.mainPile.Count() != 0 {
 		t.Fatal("NewBoard didnt set correct mainPile")
 	}
-	if board.discardPile.Count() != 0 {
-		t.Fatal("NewBoard didnt set correct discardPile")
+	if board.centerPile.Count() != 0 {
+		t.Fatal("NewBoard didnt set correct centerPile")
 	}
 	if board.phase != P1 {
 		t.Fatal("NewBoard didnt set phase to 1")
+	}
+	if board.gamen != 0 {
+		t.Fatal("NewBoard didnt set phase to 1")
+	}
+	if board.hearthsBroken {
+		t.Fatal("NewBoard didnt set hearthsBroken to false")
 	}
 }
 
@@ -50,29 +55,35 @@ func TestDealAll(t *testing.T) {
 
 func TestP2Trade(t *testing.T) {
 	b := testBoardP2()
-	err := b.P2Trade(0, b.Player(0).Hand().Card(0))
+	err := b.P2Trade(0, b.Player(0).Hand().Cards()[0:3])
 	if err != nil {
 		t.Fatal("b.p2trade returned error,", err, " shouldnt")
 	}
-	err = b.P2Trade(1, b.Player(1).Hand().Card(0))
+	err = b.P2Trade(1, b.Player(1).Hand().Cards()[0:3])
 	if err != nil {
 		t.Fatal("b.p2trade 2 returned error,", err, " shouldnt")
 	}
-	err = b.P2Trade(3, b.Player(3).Hand().Card(0))
+	err = b.P2Trade(3, b.Player(3).Hand().Cards()[0:3])
 	if err == nil {
 		t.Fatal("b.P2Trade(wrong index) didnt return an error, should")
 	}
-	err = b.P2Trade(2, b.Player(3).Hand().Card(0))
+	err = b.P2Trade(2, b.Player(3).Hand().Cards()[0:3])
 	if err == nil {
 		t.Fatal("b.P2Trade(wrong card) didnt return an error, should")
 	}
-	if b.Player(0).Hand().Count() != 12 {
-		t.Fatal("b.p2trade p1 has", b.Player(0).Hand().Count(), "cards, should have 12")
+	if b.Player(0).Hand().Count() != 10 {
+		t.Fatal("b.p2trade p1 has", b.Player(0).Hand().Count(), "cards, should have 10")
 	}
 	if b.Player(1).Hand().Count() != 13 {
 		t.Fatal("b.p2trade p2 has", b.Player(1).Hand().Count(), "cards, should have 13")
 	}
-	if b.Player(2).Hand().Count() != 14 {
-		t.Fatal("b.p2trade p3 has", b.Player(2).Hand().Count(), "cards, should have 14")
+	if b.Player(2).Hand().Count() != 16 {
+		t.Fatal("b.p2trade p3 has", b.Player(2).Hand().Count(), "cards, should have 16")
 	}
+
+	/**
+	b = testBoardP2()
+	b.gamen = 1
+	err = b.P2Trade(0, b.Player(0).Hand().Card(0))
+	**/
 }

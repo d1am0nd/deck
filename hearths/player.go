@@ -5,13 +5,18 @@ import (
 )
 
 type Player struct {
-	hand deck.Deck
+	hand    deck.Deck
+	garbage deck.Deck
 }
 
-func NewPlayer(d deck.Deck) Player {
-	return Player{hand: d}
+func NewPlayer() Player {
+	return Player{hand: deck.NewDeck([]deck.Card{}), garbage: deck.NewDeck([]deck.Card{})}
 }
 
 func (p *Player) Hand() *deck.Deck {
 	return &p.hand
+}
+
+func (p *Player) Garbage() *deck.Deck {
+	return &p.garbage
 }

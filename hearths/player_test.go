@@ -19,8 +19,8 @@ func testDeck() deck.Deck {
 }
 
 func TestNewPlayer(t *testing.T) {
-	p := NewPlayer(testDeck())
-	if p.hand.Card(0) != testCards()[0] || p.hand.Card(1) != testCards()[1] {
-		t.Fatal("NewPlayer(2 cards) doesnt have correct cards")
+	p := NewPlayer()
+	if p.hand.Count() != 0 || p.garbage.Count() != 0 {
+		t.Fatal("NewPlayer() doesnt have 0 cards, should have")
 	}
 }
