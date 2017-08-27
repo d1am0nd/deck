@@ -85,9 +85,72 @@ func TestP2Trade(t *testing.T) {
 		t.Fatal("b.p2trade p3 has", b.Player(2).Hand().Count(), "cards, should have 16")
 	}
 
-	/**
-	b = testBoardP2()
-	b.gamen = 1
-	err = b.P2Trade(0, b.Player(0).Hand().Card(0))
-	**/
+}
+
+func TestP3PutOnPile(t *testing.T) {
+	var err error
+	err = nil
+	b := testBoardP2()
+	b.turn = P2lastTurn + 1
+	b.phase = P3
+	startTurn := b.turn
+	nexti := b.NextPlayerI()
+	var found = false
+	for i, c := range b.Player(nexti).Hand().Cards() {
+		err = b.P3PutOnPile(nexti, c)
+		if c.Face() == "c" && c.Value() == "2" {
+			if err != nil {
+				t.Fatal("b.P3lastTurn(2c) returned err, shouldnt")
+			}
+			found = true
+			break
+		}
+		if err == nil && (c.Face() != "c" || c.Value() != "2") {
+			t.Fatal("b.P3PutOnPile 1: wrong card", c, i, "no error")
+		}
+	}
+	if !found {
+		t.Fatal("b.P3lastTurn 1 NextPlayerI didnt have 2c", b.Player(nexti).Hand().Cards())
+	}
+	if b.turn != startTurn + 1 {
+		t.Fatal("b.P3lastTurn 1 didnt increase turn", b.turn, startTurn)
+	}
+	for ; b.turn <= P3lastTurn ; {
+		n := b.NextPlayerI()
+		for _, c := range b.Player(n).Hand().Cards() {
+			err := b.P3PutOnPile(n, c)
+			if err == nil {
+				break
+			}
+		}
+	}
+	if b.turn != P3lastTurn + 1 {
+		t.Fatal("b.P3 finish: finished on turn", b.turn, ", should have turn ", P3lastTurn + 1)
+	}
+	if b.MainPile().Count() != 0 {
+		t.Fatal("b.P3 finish: main pile has", b.MainPile().Count(), "cards, should have 0")
+	}
+	if b.Player(0).Hand().Count() != 0 {
+		t.Fatal("b.P3 finish: player 0 has", b.Player(0).Hand().Count(), "cards, should have 0")
+	}
+	if b.Player(1).Hand().Count() != 0 {
+		t.Fatal("b.P3 finish: player 1 has", b.Player(1).Hand().Count(), "cards, should have 0")
+	}
+	if b.Player(2).Hand().Count() != 0 {
+		t.Fatal("b.P3 finish: player 2 has", b.Player(2).Hand().Count(), "cards, should have 0")
+	}
+	if b.Player(3).Hand().Count() != 0 {
+		t.Fatal("b.P3 finish: player 3 has", b.Player(3).Hand().Count(), "cards, should have 0")
+	}
+	if b.Phase() != P4 {
+		t.Fatal("b.P3 finish: left phase in ", b.Phase(), "should have", P4)
+	}
+
+	gcount := 0
+	for _, p := range b.players {
+		gcount += p.Garbage().Count()
+	}
+	if gcount != 52 {
+		t.Fatal("b.P3 finish: left garbage count at", gcount, "should be 52")
+	}
 }

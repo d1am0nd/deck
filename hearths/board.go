@@ -19,6 +19,11 @@ type Board struct {
 const P1 = 1 // Suffle + deal
 const P2 = 2 // Trade
 const P3 = 3 // Play
+const P4 = 4
+
+const P1lastTurn = 0
+const P2lastTurn = 3
+const P3lastTurn = 55
 
 func NewBoard(players [4]Player) Board {
 	return Board{
@@ -37,13 +42,13 @@ func (b *Board) Phase() int {
 	return b.phase
 }
 
-func (b *Board) MainPile() deck.Deck {
-	return b.mainPile
+func (b *Board) MainPile() *deck.Deck {
+	return &b.mainPile
 }
 
 func (b *Board) NextPlayerI() int {
 	if b.Phase() == P3 {
-		return b.turn + b.p3started%4
+		return (b.turn + b.p3started)%4
 	}
 	return b.turn % 4
 }
@@ -107,36 +112,52 @@ func (b *Board) P2Trade(fromi int, cards []deck.Card) error {
 	to.Hand().PutManyOnTop(cards)
 	b.turn++
 
-	if b.turn == 4 {
+	if b.turn > P2lastTurn {
 		b.phase = P3
 	}
 
 	return err
 }
 
-/*
 func (b *Board) P3PutOnPile(fromi int, card deck.Card) error {
+	if b.turn == P2lastTurn + 1 && (card.Face() != "c" || card.Value() != "2") {
+		return newErr("Must put 2c")
+	}
 	if b.Phase() != P3 {
 		return newErr("Wrong phase")
 	}
 	if b.NextPlayerI() != fromi {
 		return newErr("Wrong player")
 	}
-	if !canPlayOnPile(b.Player(fromi).Hand(), card, b.MainPile()) {
-		return err
-	}
-	var err error
-	card, err = b.Player(fromi).FindAndDraw(card)
+	err := canPlayOnPile(*b.Player(fromi).Hand(), card, *b.MainPile(), b.hearthsBroken)
 	if err != nil {
 		return err
 	}
-	pile.PutOnTop(card)
+	card, err = b.Player(fromi).Hand().FindAndDraw(card)
+	if err != nil {
+		return err
+	}
+	b.MainPile().PutOnTop(card)
 
-	if pile.Count() == 4 {
-		// Do stuff
+	if isHearths(card) {
+		b.hearthsBroken = true
+	}
+
+	if b.MainPile().Count() == 4 {
+		// cards in pile have reverse ordfer to players indicies
+		win := b.p3started + (4 - winnerI(*b.MainPile())) % 4
+		cards := make([]deck.Card, 4)
+		copy(cards, b.MainPile().Cards())
+		err = b.MainPile().DrawSpecificCards(cards)
+		if err != nil {
+			return err
+		}
+		b.Player(win).Garbage().PutManyOnTop(cards)
 	}
 
 	b.turn++
+	if b.turn > P3lastTurn {
+		b.phase = P4
+	}
+	return nil
 }
-
-*/

@@ -53,3 +53,21 @@ func TestCanPlayOnPile(t *testing.T) {
 		t.Fatal("canPlayOnPile 6: returned no error, should")
 	}
 }
+
+func TestWinnerI(t *testing.T) {
+	d := deck.NewDeck([]deck.Card{
+		deck.NewCard("Ac"), deck.NewCard("Qh"), deck.NewCard("5c"), deck.NewCard("4c")})
+	if winnerI(d) != 0 {
+		t.Fatal("winnerI 1: should return 0, returned", winnerI(d))
+	}
+	d = deck.NewDeck([]deck.Card{
+		deck.NewCard("2c"), deck.NewCard("Qh"), deck.NewCard("5c"), deck.NewCard("Tc")})
+	if winnerI(d) != 3 {
+		t.Fatal("winnerI 2: should return 3, returned", winnerI(d))
+	}
+	d = deck.NewDeck([]deck.Card{
+		deck.NewCard("As"), deck.NewCard("Qh"), deck.NewCard("Ah"), deck.NewCard("Qs")})
+	if winnerI(d) != 0 {
+		t.Fatal("winnerI 3: should return 0, returned", winnerI(d))
+	}
+}

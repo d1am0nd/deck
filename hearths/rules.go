@@ -40,3 +40,25 @@ func hasOtherThanHearths(d deck.Deck) bool {
 func isHearths(c deck.Card) bool {
 	return c.Face() == "h"
 }
+
+func winnerI(d deck.Deck) int {
+	if d.Count() != 4 {
+		return -1
+	}
+	r := 3
+	face := d.Cards()[d.Count() - 1].Face()
+	for i, c := range d.Cards() {
+		c1 := c.Comparable()
+		c2 := d.Cards()[r].Comparable()
+		if c1 == 1 {
+			c1 = 15
+		}
+		if c2 == 1 {
+			c2 = 15
+		}
+		if c.Face() == face && c1 > c2 {
+			r = i
+		}
+	}
+	return r
+}
