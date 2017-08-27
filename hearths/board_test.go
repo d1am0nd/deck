@@ -2,6 +2,7 @@ package hearths
 
 import (
 	"testing"
+	"cards/deck"
 )
 
 func testBoard() Board {
@@ -50,6 +51,9 @@ func TestDealAll(t *testing.T) {
 	}
 	if b.phase != P2 {
 		t.Fatal("P1DealAll should leave deck in p2, didnt")
+	}
+	if !b.Player(b.p3started).Hand().Find(deck.NewCard("2c")) {
+		t.Fatal("P1DealAll didnt set correct p3started")
 	}
 }
 

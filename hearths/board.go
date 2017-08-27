@@ -11,6 +11,7 @@ type Board struct {
 	mainPile      deck.Deck
 	centerPile    deck.Deck
 	hearthsBroken bool
+	p3started     int
 	turn          int
 	phase         int
 }
@@ -21,14 +22,15 @@ const P3 = 3 // Play
 
 func NewBoard(players [4]Player) Board {
 	return Board{
-		gamen:      0,
-		players:    players,
-		deck:       deck.NewDefaultDeck(),
-		mainPile:   deck.NewDeck([]deck.Card{}),
-		centerPile: deck.NewDeck([]deck.Card{}),
+		gamen:         0,
+		players:       players,
+		deck:          deck.NewDefaultDeck(),
+		mainPile:      deck.NewDeck([]deck.Card{}),
+		centerPile:    deck.NewDeck([]deck.Card{}),
 		hearthsBroken: false,
-		turn:       0,
-		phase:      1}
+		p3started:     0,
+		turn:          0,
+		phase:         1}
 }
 
 func (b *Board) Phase() int {
@@ -40,6 +42,9 @@ func (b *Board) MainPile() deck.Deck {
 }
 
 func (b *Board) NextPlayerI() int {
+	if b.Phase() == P3 {
+		return b.turn + b.p3started%4
+	}
 	return b.turn % 4
 }
 
@@ -71,6 +76,12 @@ func (b *Board) P1DealAll() error {
 		hand.PutOnTop(b.deck.Draw())
 	}
 	b.phase = P2
+	for i, p := range b.players {
+		if p.Hand().Find(deck.NewCard("2c")) {
+			b.p3started = i
+			break
+		}
+	}
 	return nil
 }
 
@@ -105,7 +116,7 @@ func (b *Board) P2Trade(fromi int, cards []deck.Card) error {
 
 /*
 func (b *Board) P3PutOnPile(fromi int, card deck.Card) error {
-	if b. Phase() != P3 {
+	if b.Phase() != P3 {
 		return newErr("Wrong phase")
 	}
 	if b.NextPlayerI() != fromi {
@@ -114,5 +125,18 @@ func (b *Board) P3PutOnPile(fromi int, card deck.Card) error {
 	if !canPlayOnPile(b.Player(fromi).Hand(), card, b.MainPile()) {
 		return err
 	}
+	var err error
+	card, err = b.Player(fromi).FindAndDraw(card)
+	if err != nil {
+		return err
+	}
+	pile.PutOnTop(card)
+
+	if pile.Count() == 4 {
+		// Do stuff
+	}
+
+	b.turn++
 }
+
 */
