@@ -35,6 +35,10 @@ func (b *Board) Phase() int {
 	return b.phase
 }
 
+func (b *Board) MainPile() deck.Deck {
+	return b.mainPile
+}
+
 func (b *Board) NextPlayerI() int {
 	return b.turn % 4
 }
@@ -100,7 +104,15 @@ func (b *Board) P2Trade(fromi int, cards []deck.Card) error {
 }
 
 /*
-func (b *Board) P3PutOnPil(fromi int, card deck.Card) error {
-
+func (b *Board) P3PutOnPile(fromi int, card deck.Card) error {
+	if b. Phase() != P3 {
+		return newErr("Wrong phase")
+	}
+	if b.NextPlayerI() != fromi {
+		return newErr("Wrong player")
+	}
+	if !canPlayOnPile(b.Player(fromi).Hand(), card, b.MainPile()) {
+		return err
+	}
 }
 */

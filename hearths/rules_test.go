@@ -19,20 +19,31 @@ func testPile2() deck.Deck {
     return deck.NewDeck([]deck.Card{})
 }
 
-func TestCanPlayOnPil(t *testing.T) {
+func TestCanPlayOnPile(t *testing.T) {
     p := testPile()
     h := testHand()
-    if !canPlayOnPile(h, deck.NewCard("5c"), p, true) {
-        t.Fatal("canPlayOnPile 1: returned false, shouldnt")
+    err := canPlayOnPile(h, deck.NewCard("5c"), p, true)
+    if err != nil {
+        t.Fatal("canPlayOnPile 1: returned err,", err, "shouldnt")
     }
-    if canPlayOnPile(h, deck.NewCard("Qh"), p, true) {
-        t.Fatal("canPlayOnPile 2: returned true, shouldnt")
+    err = canPlayOnPile(h, deck.NewCard("Qh"), p, true)
+    if err == nil {
+        t.Fatal("canPlayOnPile 2: returned no error, shouldn")
     }
+    p = testPile2()
+    err = canPlayOnPile(h, deck.NewCard("Qh"), p, true)
+    if err != nil {
+        t.Fatal("canPlayOnPile 3: returned err,", err, "shouldnt")
+    }
+    err = canPlayOnPile(h, deck.NewCard("Qh"), p, false)
+    if err == nil {
+        t.Fatal("canPlayOnPile 4: returned no error, should")
+    }
+
     h = testPile2()
-    if !canPlayOnPile(h, deck.NewCard("Qh"), p, true) {
-        t.Fatal("canPlayOnPile 3: returend false, shouldnt")
-    }
-    if canPlayOnPile(h, deck.NewCard("Qh"), p, false) {
-        t.Fatal("canPlayOnPile 4: returend false, shouldnt")
+    h.PutOnTop(deck.NewCard("Th"))
+    err = canPlayOnPile(h, deck.NewCard("Th"), p, false)
+    if err != nil {
+        t.Fatal("canPlayOnPile 5: returned error", err, "shouldnt")
     }
 }
