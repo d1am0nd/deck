@@ -153,7 +153,7 @@ func (d *Deck) DrawCardsFromN(i, n int) ([]Card, error) {
 	return drawn, nil
 }
 
-// Draws all passed cards or return an error, if at least one of them is not found
+// Draws all passed cards or returns an error, if at least one of them is not found
 func (d *Deck) DrawSpecificCards(cards []Card) error {
 	for i := range cards {
 		if !d.Find(cards[i]) {
@@ -183,9 +183,19 @@ func (d *Deck) PutOnTop(c Card) {
 	d.SetCards(append([]Card{c}, d.Cards()...))
 }
 
+// Puts given slice of cards on top of deck
+func (d *Deck) PutManyOnTop(c []Card) {
+	d.SetCards(append(c, d.Cards()...))
+}
+
 // Puts given card at the end of deck
 func (d *Deck) PutOnBot(c Card) {
 	d.SetCards(append(d.Cards(), c))
+}
+
+// Puts given slice of cards on bot of deck
+func (d *Deck) PutManyOnBot(c []Card) {
+	d.SetCards(append(d.Cards(), c...))
 }
 
 // Append card to deck to nth index

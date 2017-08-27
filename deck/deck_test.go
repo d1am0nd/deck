@@ -311,6 +311,15 @@ func TestPutOnTop(t *testing.T) {
 	}
 }
 
+func TestPutManyOnTop(t *testing.T) {
+	deck := testDeck()
+	c := []Card{Card{face: "d", value: "7", valid: true}, Card{face: "d", value: "8", valid: true}}
+	deck.PutManyOnTop(c)
+	if deck.Card(0) != c[0] || deck.Card(1) != c[1] {
+		t.Fatal("deck.PutManyOnTop(7d, 8d): card with index 0 or 1 is not correct")
+	}
+}
+
 func TestPutOnBot(t *testing.T) {
 	deck := testDeck()
 	c := Card{face: "d", value: "7", valid: true}
@@ -320,6 +329,15 @@ func TestPutOnBot(t *testing.T) {
 	}
 	if len(deck.cards) != 3 {
 		t.Fatal("testDeck.PutOnBot(7d) deck has ", len(deck.cards), " cards, should have 3")
+	}
+}
+
+func TestPutManyOnBot(t *testing.T) {
+	deck := testDeck()
+	c := []Card{Card{face: "d", value: "7", valid: true}, Card{face: "d", value: "8", valid: true}}
+	deck.PutManyOnBot(c)
+	if deck.Card(deck.Count() - 2) != c[0] || deck.Card(deck.Count() - 1) != c[1] {
+		t.Fatal("deck.PutManyOnTop(7d, 8d): card with index 0 or 1 is not correct")
 	}
 }
 
