@@ -9,7 +9,8 @@ type Board struct {
 	players       [4]Player
 	deck          deck.Deck
 	mainPile      deck.Deck
-	centerPile    deck.Deck
+	finished      bool
+	results       [4]int
 	hearthsBroken bool
 	p3started     int
 	turn          int
@@ -31,11 +32,20 @@ func NewBoard(players [4]Player) Board {
 		players:       players,
 		deck:          deck.NewDefaultDeck(),
 		mainPile:      deck.NewDeck([]deck.Card{}),
-		centerPile:    deck.NewDeck([]deck.Card{}),
+		results:       [4]int{0, 0, 0, 0},
+		finished:      false,
 		hearthsBroken: false,
 		p3started:     0,
 		turn:          0,
 		phase:         1}
+}
+
+func (b *Board) Finished() bool {
+	return b.finished
+}
+
+func (b *Board) Results() [4]int {
+	return b.results
 }
 
 func (b *Board) Phase() int {
@@ -48,7 +58,7 @@ func (b *Board) MainPile() *deck.Deck {
 
 func (b *Board) NextPlayerI() int {
 	if b.Phase() == P3 {
-		return (b.turn + b.p3started)%4
+		return (b.turn + b.p3started) % 4
 	}
 	return b.turn % 4
 }
@@ -120,7 +130,7 @@ func (b *Board) P2Trade(fromi int, cards []deck.Card) error {
 }
 
 func (b *Board) P3PutOnPile(fromi int, card deck.Card) error {
-	if b.turn == P2lastTurn + 1 && (card.Face() != "c" || card.Value() != "2") {
+	if b.turn == P2lastTurn+1 && (card.Face() != "c" || card.Value() != "2") {
 		return newErr("Must put 2c")
 	}
 	if b.Phase() != P3 {
@@ -145,7 +155,7 @@ func (b *Board) P3PutOnPile(fromi int, card deck.Card) error {
 
 	if b.MainPile().Count() == 4 {
 		// cards in pile have reverse ordfer to players indicies
-		win := b.p3started + (4 - winnerI(*b.MainPile())) % 4
+		win := b.p3started + (4-winnerI(*b.MainPile()))%4
 		cards := make([]deck.Card, 4)
 		copy(cards, b.MainPile().Cards())
 		err = b.MainPile().DrawSpecificCards(cards)
@@ -158,6 +168,10 @@ func (b *Board) P3PutOnPile(fromi int, card deck.Card) error {
 	b.turn++
 	if b.turn > P3lastTurn {
 		b.phase = P4
+		for i, p := range b.players {
+			b.results[i] = sumResult(*p.Garbage())
+		}
+		b.finished = true
 	}
 	return nil
 }

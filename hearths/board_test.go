@@ -1,6 +1,7 @@
 package hearths
 
 import (
+	"fmt"
 	"testing"
 	"cards/deck"
 )
@@ -24,8 +25,8 @@ func TestNewBoard(t *testing.T) {
 	if board.mainPile.Count() != 0 {
 		t.Fatal("NewBoard didnt set correct mainPile")
 	}
-	if board.centerPile.Count() != 0 {
-		t.Fatal("NewBoard didnt set correct centerPile")
+	if board.finished != false {
+		t.Fatal("NewBoard didnt set correct finished")
 	}
 	if board.phase != P1 {
 		t.Fatal("NewBoard didnt set phase to 1")
@@ -112,10 +113,10 @@ func TestP3PutOnPile(t *testing.T) {
 	if !found {
 		t.Fatal("b.P3lastTurn 1 NextPlayerI didnt have 2c", b.Player(nexti).Hand().Cards())
 	}
-	if b.turn != startTurn + 1 {
+	if b.turn != startTurn+1 {
 		t.Fatal("b.P3lastTurn 1 didnt increase turn", b.turn, startTurn)
 	}
-	for ; b.turn <= P3lastTurn ; {
+	for b.turn <= P3lastTurn {
 		n := b.NextPlayerI()
 		for _, c := range b.Player(n).Hand().Cards() {
 			err := b.P3PutOnPile(n, c)
@@ -124,8 +125,8 @@ func TestP3PutOnPile(t *testing.T) {
 			}
 		}
 	}
-	if b.turn != P3lastTurn + 1 {
-		t.Fatal("b.P3 finish: finished on turn", b.turn, ", should have turn ", P3lastTurn + 1)
+	if b.turn != P3lastTurn+1 {
+		t.Fatal("b.P3 finish: finished on turn", b.turn, ", should have turn ", P3lastTurn+1)
 	}
 	if b.MainPile().Count() != 0 {
 		t.Fatal("b.P3 finish: main pile has", b.MainPile().Count(), "cards, should have 0")
@@ -153,4 +154,5 @@ func TestP3PutOnPile(t *testing.T) {
 	if gcount != 52 {
 		t.Fatal("b.P3 finish: left garbage count at", gcount, "should be 52")
 	}
+	fmt.Println(b.Results())
 }

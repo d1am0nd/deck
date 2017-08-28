@@ -46,7 +46,7 @@ func winnerI(d deck.Deck) int {
 		return -1
 	}
 	r := 3
-	face := d.Cards()[d.Count() - 1].Face()
+	face := d.Cards()[d.Count()-1].Face()
 	for i, c := range d.Cards() {
 		c1 := c.Comparable()
 		c2 := d.Cards()[r].Comparable()
@@ -58,6 +58,18 @@ func winnerI(d deck.Deck) int {
 		}
 		if c.Face() == face && c1 > c2 {
 			r = i
+		}
+	}
+	return r
+}
+
+func sumResult(d deck.Deck) int {
+	r := 0
+	for _, c := range d.Cards() {
+		if isHearths(c) {
+			r++
+		} else if c.Face() == "c" && c.Value() == "Q" {
+			r += 13
 		}
 	}
 	return r

@@ -71,3 +71,20 @@ func TestWinnerI(t *testing.T) {
 		t.Fatal("winnerI 3: should return 0, returned", winnerI(d))
 	}
 }
+
+func TestSumResult(t *testing.T) {
+	d := testHand()
+	if sumResult(d) != 1 {
+		t.Fatal("sumResult(testhand) returned", sumResult(d), "should return 1")
+	}
+	d = deck.NewDeck([]deck.Card{
+		deck.NewCard("Qc"), deck.NewCard("Qh"), deck.NewCard("5c"), deck.NewCard("2h")})
+	if sumResult(d) != 15 {
+		t.Fatal("sumResult(testhand) returned", sumResult(d), "should return 15")
+	}
+	d = deck.NewDeck([]deck.Card{
+		deck.NewCard("Ah"), deck.NewCard("Qh")})
+	if sumResult(d) != 2 {
+		t.Fatal("sumResult(testhand) returned", sumResult(d), "should return 2")
+	}
+}
