@@ -154,5 +154,8 @@ func TestP3PutOnPile(t *testing.T) {
 	if gcount != 52 {
 		t.Fatal("b.P3 finish: left garbage count at", gcount, "should be 52")
 	}
+	if !b.Finished() {
+		t.Fatal("b.P3 finish: finished false, should be true")
+	}
 	fmt.Println(b.Results())
 }
