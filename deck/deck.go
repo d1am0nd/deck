@@ -70,11 +70,18 @@ func (d *Deck) Count() int {
 
 // Sorting by comparable()
 func (d *Deck) SortByComp(desc bool) {
-	sortByComp(d.Cards(), desc)
+	if desc {
+		sort(func (c1 Card, c2 Card) bool {return c1.Comparable() > c2.Comparable()},d.Cards())
+	} else {
+		sort(func (c1 Card, c2 Card) bool {return c1.Comparable() < c2.Comparable()},d.Cards())
+	}
 }
 
-// Quciksort with pivot being middle element
-func sortByComp(cards []Card, desc bool) []Card {
+func (d *Deck) Sort(comp func(Card, Card) bool) {
+	sort(comp, d.Cards())
+}
+
+func sort(comp func(Card, Card) bool, cards []Card) []Card {
 	clen := len(cards)
 	if clen <= 1 {
 		return cards
@@ -84,21 +91,14 @@ func sortByComp(cards []Card, desc bool) []Card {
 	left, right := 0, clen-1
 	cards[pivoti], cards[right] = cards[right], cards[pivoti]
 	for i := 0; i < right; i++ {
-		if desc {
-			if cards[i].Comparable() > pivot.Comparable() {
-				cards[left], cards[i] = cards[i], cards[left]
-				left++
-			}
-		} else {
-			if cards[i].Comparable() < pivot.Comparable() {
-				cards[left], cards[i] = cards[i], cards[left]
-				left++
-			}
+		if comp(cards[i], pivot) {
+			cards[left], cards[i] = cards[i], cards[left]
+			left++
 		}
 	}
 	cards[left], cards[right] = cards[right], cards[left]
-	sortByComp(cards[:left], desc)
-	sortByComp(cards[left+1:], desc)
+	sort(comp, cards[:left])
+	sort(comp, cards[left+1:])
 
 	return cards
 }

@@ -379,3 +379,22 @@ func TestPutInN(t *testing.T) {
 		t.Fatal("testDeck.PutInN(3, 7d) didnt return an error, should (n too high)")
 	}
 }
+
+func TestSort(t *testing.T) {
+    deck := testDeck6()
+    comp := func (c1 Card, c2 Card) bool { return c1.Comparable() > c2.Comparable() }
+    deck.Sort(comp)
+    for i := 0; i < deck.Count() - 2; i++ {
+        if comp(deck.Card(i + 1), deck.Card(i)) {
+            t.Fatal("cards", i + 1, "bigger than card", i, "shouldnt be")
+        }
+    }
+    deck = testDeck6()
+    comp = func (c1 Card, c2 Card) bool { return c1.Comparable() < c2.Comparable() }
+    deck.Sort(comp)
+    for i := 0; i < deck.Count() - 2; i++ {
+        if comp(deck.Card(i + 1), deck.Card(i)) {
+            t.Fatal("cards", i + 1, "smaller than card", i, "shouldnt be")
+        }
+    }
+}
