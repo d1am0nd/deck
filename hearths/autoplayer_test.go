@@ -27,18 +27,26 @@ func TestP2Sort(t *testing.T) {
 	}
 }
 
-func TestPlayNextMove(t *testing.T) {
+func TestPlayPhase2player(t *testing.T) {
     b := boardP2()
-    playPhase2player(&b, b.NextPlayerI())
-/*
     for i := 0; i < 4; i++ {
-        err := b.PlayNextMove()
+        err := playPhase2player(&b, b.NextPlayerI())
         if err != nil {
-            t.Fatal("PlayNextMove p2 returned error", err, "shouldnt")
+            t.Fatal("playPhase2player", i, ", returned err", err, "shouldnt")
         }
-        if b.NextPlayerI() != (i + 1) % 4 {
-            t.Fatal("PlayNextMove p2 i", i, "board next player is ", b.NextPlayerI(), "should be ", (i + 1) % 4)
+        if i == 3 {
+            if b.Player(b.NextPlayerI()).Hand().Count() != b.Player((b.NextPlayerI() + 3) % 4).Hand().Count() {
+                t.Fatal("playPhase2player", i, ", p1 should have same cards as next, doesnt. p1:" , b.Player((b.NextPlayerI() + 3) % 4).Hand().Count(), "p2", b.Player(b.NextPlayerI()).Hand().Count())
+            }
+        } else if i == 0 {
+            if b.Player(b.NextPlayerI()).Hand().Count() != b.Player((b.NextPlayerI() + 3) % 4).Hand().Count() + 6 {
+                t.Fatal("playPhase2player", i, ", p1 should have 6 less cards than p2, doesnt. p1:" , b.Player((b.NextPlayerI() + 3) % 4).Hand().Count(), "p2", b.Player(b.NextPlayerI()).Hand().Count())
+            }
+        } else {
+            if b.Player(b.NextPlayerI()).Hand().Count() != b.Player((b.NextPlayerI() + 3) % 4).Hand().Count() + 3 {
+                t.Fatal("playPhase2player", i, ", p1 should have 3 less cards than p2, doesnt. p1:" , b.Player((b.NextPlayerI() + 3) % 4).Hand().Count(), "p2", b.Player(b.NextPlayerI()).Hand().Count())
+            }
         }
+
     }
-*/
 }

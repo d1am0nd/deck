@@ -16,11 +16,11 @@ func playPhase2player(b *Board, next int) error {
 		return newErr("Wrong player")
 	}
 	b.Player(next).Hand().Sort(p2sort)
-	drawn, err := b.Player(next).Hand().DrawCards(4)
+	drawn := b.Player(next).Hand().Cards()[:3]
+	err := b.P2Trade(next, drawn)
 	if err != nil {
 		return err
 	}
-	b.Player((next + 1) % 4).Hand().PutManyOnTop(drawn)
 	return nil
 }
 
