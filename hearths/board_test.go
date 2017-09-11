@@ -1,9 +1,9 @@
 package hearths
 
 import (
+	"cards/deck"
 	"fmt"
 	"testing"
-	"cards/deck"
 )
 
 func testBoard() Board {

@@ -1,6 +1,7 @@
 package deck
 
 import (
+	"fmt"
 	"math/rand"
 	"time"
 )
@@ -232,4 +233,10 @@ func (d *Deck) PutInRnd(c Card) {
 	rand.Seed(time.Now().Unix())
 	i := rand.Intn(d.Count())
 	d.PutInN(i, c)
+}
+
+func (d *Deck) Print() {
+	for _, c := range d.Cards() {
+		fmt.Print(c.Value(), c.Face(), ",")
+	}
 }
