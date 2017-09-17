@@ -11,7 +11,7 @@ func PlayNextMove(b *Board) error {
 }
 */
 
-func playPhase2player(b *Board, next int) error {
+func PlayPhase2player(b *Board, next int) error {
 	if next != b.NextPlayerI() {
 		return newErr("Wrong player")
 	}
@@ -38,25 +38,43 @@ func p2sort(c1 deck.Card, c2 deck.Card) bool {
 	return c1.Comparable() >= c2.Comparable()
 }
 
-func sortCards(bigger func(deck.Card, deck.Card) bool, cards []deck.Card) []deck.Card {
-	if len(cards) < 2 {
-		return cards
+func PlayPhase3player(b *Board, next int) error {
+	if next != b.NextPlayerI() {
+		return newErr("Wrong player")
 	}
-	pivoti := len(cards) / 2
-	left, right := 0, len(cards)-1
-	pivot := cards[pivoti]
-
-	cards[pivoti], cards[right] = cards[right], cards[pivoti]
-	for i := 0; i < right; i++ {
-		if bigger(cards[i], pivot) {
-			cards[left], cards[i] = cards[i], cards[left]
-			left++
+	if b.Turn() == P2lastTurn + 1 {
+		return b.P3PutOnPile(next, deck.NewCard("2c"))
+	}
+	if b.Player(next).Hand().Count() == 0 {
+		b.Player(next).Hand().Sort(p3sortEmpty)
+	} else {
+		b.Player(next).Hand().Sort(p3sort)
+	}
+	var err error
+	err = nil
+	for _, c := range b.Player(next).Hand().Cards() {
+		err = b.P3PutOnPile(next, c)
+		if err == nil {
+			return err
 		}
 	}
+	return err
+}
 
-	cards[left], cards[right] = cards[right], cards[left]
-	sortCards(bigger, cards[:left])
-	sortCards(bigger, cards[left+1:])
+func p3sort(c1 deck.Card, c2 deck.Card) bool {
+	if c1.Value() == "A" {
+		return false
+	} else if c2.Value() == "A" {
+		return true
+	}
+	return c1.Comparable() <= c2.Comparable()
+}
 
-	return cards
+func p3sortEmpty(c1 deck.Card, c2 deck.Card) bool {
+	if c1.Value() == "A" {
+		return true
+	} else if c2.Value() == "A" {
+		return false
+	}
+	return c1.Comparable() >= c2.Comparable()
 }

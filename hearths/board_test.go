@@ -2,7 +2,6 @@ package hearths
 
 import (
 	"cards/deck"
-	"fmt"
 	"testing"
 )
 
@@ -157,5 +156,4 @@ func TestP3PutOnPile(t *testing.T) {
 	if !b.Finished() {
 		t.Fatal("b.P3 finish: finished false, should be true")
 	}
-	fmt.Println(b.Results())
 }

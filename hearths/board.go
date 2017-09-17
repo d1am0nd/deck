@@ -40,6 +40,14 @@ func NewBoard(players [4]Player) Board {
 		phase:         1}
 }
 
+func (b *Board) HearthsBroken() bool {
+	return b.HearthsBroken()
+}
+
+func (b *Board) Turn() int {
+	return b.turn
+}
+
 func (b *Board) Finished() bool {
 	return b.finished
 }
@@ -74,6 +82,15 @@ func isNext(first, second int) bool {
 	return false
 }
 
+func  (b *Board) findPlayerWithCard(card deck.Card) int {
+	for i := 0; i < 4; i++ {
+		if b.Player(i).Hand().Find(card) {
+			return i
+		}
+	}
+	return -1
+}
+
 func (b *Board) P1ShuffleDeck() error {
 	if b.phase != P1 {
 		newErr("Wrong phase")
@@ -91,17 +108,14 @@ func (b *Board) P1DealAll() error {
 		hand.PutOnTop(b.deck.Draw())
 	}
 	b.phase = P2
-	for i, p := range b.players {
-		if p.Hand().Find(deck.NewCard("2c")) {
-			b.p3started = i
-			break
-		}
-	}
+	b.p3started = b.findPlayerWithCard(deck.NewCard("2c"))
 	return nil
 }
 
 // Expects 3 cards
-func (b *Board) P2Trade(fromi int, cards []deck.Card) error {
+func (b *Board) P2Trade(fromi int, original []deck.Card) error {
+	cards := make([]deck.Card, len(original))
+	copy(cards, original)
 	if b.Phase() != P2 {
 		return newErr("Wrong phase")
 	}
@@ -124,6 +138,7 @@ func (b *Board) P2Trade(fromi int, cards []deck.Card) error {
 
 	if b.turn > P2lastTurn {
 		b.phase = P3
+		b.p3started = b.findPlayerWithCard(deck.NewCard("2c"))
 	}
 
 	return err
